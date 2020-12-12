@@ -11,6 +11,7 @@ CLIENT_ID = os.environ.get('SPOTIPY_CLIENT_ID')
 CLIENT_SECRET = os.environ.get('SPOTIPY_CLIENT_SECRET')
 REDIRECT_URI = os.environ.get('SPOTIPY_REDIRECT_URI')
 REFRESH_TOKEN = os.environ.get('SPOTIPY_REFRESH_TOKEN')
+DEFAULT_COLOR = (210, 105, 30)
 
 def main(k, color_tol, size):
     """Sets the LED-strip to a suitable color for the current artwork.
@@ -47,7 +48,7 @@ def main(k, color_tol, size):
             LED_INVERT = False
         led = WS281XController(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA,
                                LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
-        led.set_color(140, 140, 0)
+        led.set_color(*DEFAULT_COLOR)
         print('WS281X Controller created')
     else:
         print('WS281X is INACTIVE!')
@@ -69,26 +70,20 @@ def main(k, color_tol, size):
     try:
         while True:
             spotify.update_current_playback()
-            if spotify.connected_to_chromecast(name):
-                if spotify.new_song(old_song_id):
-                    try:
-                        artwork = spotify.get_artwork()
-                        background_color = SpotifyBackgroundColor(
-                            img=artwork, image_processing_size=size)
-                        r, g, b = background_color.best_color(
-                            k=k, color_tol=color_tol)
-                    except NoArtworkException:
-                        r, g, b = 255, 255, 255
-                    led.set_color(r, g, b)
-                    old_song_id = spotify.get_current_song_id()
-            else:
-                old_song_id = ''
-                r, g, b = led.get_color()
-                if r != 0 or g != 0 or b != 0:
-                    led.set_color(0, 0, 0)
+            if spotify.new_song(old_song_id):
+                try:
+                    artwork = spotify.get_artwork()
+                    background_color = SpotifyBackgroundColor(
+                        img=artwork, image_processing_size=size)
+                    r, g, b = background_color.best_color(
+                        k=k, color_tol=color_tol)
+                except NoArtworkException:
+                    r, g, b = DEFAULT_COLOR
+                led.set_color(r, g, b)
+                old_song_id = spotify.get_current_song_id()
             sleep(2)
     except KeyboardInterrupt:
-        led.set_color(0, 0, 0)
+        led.set_color(*DEFAULT_COLOR)
 
 
 if __name__ == '__main__':

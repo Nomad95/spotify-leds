@@ -60,7 +60,6 @@ class CurrentSpotifyPlayback():
                 sp = spotipy.Spotify(auth=token)
                 data = json.dumps(sp.current_playback())
                 data = json.loads(data)
-                print("playbackData: ", data)
             except Exception:
                 raise CouldNotFetchPlaybackException(
                     'Something went wrong when' \
