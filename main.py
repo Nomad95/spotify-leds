@@ -31,6 +31,8 @@ def main(k, color_tol, size):
     config.read('config.ini')
     WS281X = config['WS281X']
     if WS281X['is_active'] == 'True':
+        print('WS281X is active...')
+        print('WS281X is active creating controller')
         from ws281x_controller import WS281XController
         LED_COUNT = int(WS281X['led_count'])
         LED_PIN = int(WS281X['led_pin'])
@@ -45,7 +47,9 @@ def main(k, color_tol, size):
             LED_INVERT = False
         led = WS281XController(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA,
                                LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
+        print('WS281X Controller created')
     else:
+        print('WS281X is INACTIVE!')
         from led_controller import LEDController
         GPIO_PINS = config['GPIO PINS']
         red_pin = int(GPIO_PINS['red_pin'])
@@ -54,8 +58,11 @@ def main(k, color_tol, size):
         led = LEDController(red_pin, green_pin, blue_pin)
     name = config['CHROMECAST']['name']
 
+    print('Creating spotify playback object')
     spotify = CurrentSpotifyPlayback(CLIENT_ID, CLIENT_SECRET,
                                      REDIRECT_URI, REFRESH_TOKEN)
+
+    print('Created spotify playback')
 
     old_song_id = ''
     try:
