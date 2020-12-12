@@ -73,11 +73,13 @@ def main(k, color_tol, size):
             if spotify.new_song(old_song_id):
                 try:
                     artwork = spotify.get_artwork()
+                    print("got new artwork :)!", artwork)
                     background_color = SpotifyBackgroundColor(
                         img=artwork, image_processing_size=size)
                     r, g, b = background_color.best_color(
                         k=k, color_tol=color_tol)
-                except NoArtworkException:
+                except NoArtworkException as e:
+                    print("exception!: ", e)
                     r, g, b = DEFAULT_COLOR
                 led.set_color(r, g, b)
                 old_song_id = spotify.get_current_song_id()
