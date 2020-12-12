@@ -80,6 +80,7 @@ class WS281XController():
         r_old, g_old, b_old = self.get_color()
         rgb_list = self._linear_gradient(start=[r_old, g_old, b_old],
                                         finish=[r, g, b])
+        print("Set color", r, g, b)
         for r, g, b in rgb_list:
             for i in range(self.strip.numPixels()):
                 self.strip.setPixelColorRGB(i, r, g, b)
