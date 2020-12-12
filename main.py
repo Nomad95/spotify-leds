@@ -47,6 +47,7 @@ def main(k, color_tol, size):
             LED_INVERT = False
         led = WS281XController(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA,
                                LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
+        led.set_color(140, 140, 0)
         print('WS281X Controller created')
     else:
         print('WS281X is INACTIVE!')
