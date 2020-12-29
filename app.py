@@ -15,7 +15,8 @@ CLIENT_SECRET = os.environ.get('SPOTIPY_CLIENT_SECRET')
 REDIRECT_URI = os.environ.get('SPOTIPY_REDIRECT_URI')
 REFRESH_TOKEN = os.environ.get('SPOTIPY_REFRESH_TOKEN')
 
-global p
+p = None
+
 
 @app.route('/')
 def main():
@@ -103,6 +104,7 @@ if __name__ == '__main__':
     spotify = CurrentSpotifyPlayback(CLIENT_ID, CLIENT_SECRET,
                                      REDIRECT_URI, REFRESH_TOKEN)
 
+    global p
     p = Process(target=main_spotify, args=())
 
     app.run(host='0.0.0.0')
