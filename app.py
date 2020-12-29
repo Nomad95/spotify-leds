@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, Session, render_template, request
 import os
 from time import sleep
 from multiprocessing import Process
@@ -15,7 +15,7 @@ CLIENT_SECRET = os.environ.get('SPOTIPY_CLIENT_SECRET')
 REDIRECT_URI = os.environ.get('SPOTIPY_REDIRECT_URI')
 REFRESH_TOKEN = os.environ.get('SPOTIPY_REFRESH_TOKEN')
 
-p
+Session(app)
 
 
 @app.route('/')
@@ -25,7 +25,7 @@ def main():
 
 @app.route('/spotify')
 def spotify():
-    global p
+    p = Session['process']
     if not p.is_alive():
         p = Process(target=main_spotify, args=())
         p.start()
@@ -34,9 +34,8 @@ def spotify():
 
 @app.route('/manual')
 def manual():
-    global p
     try:
-        p.terminate()
+        Session['process'].terminate()
     except AttributeError:
         pass
     return render_template('manual.html')
@@ -58,9 +57,8 @@ def color():
 
 @app.route('/off')
 def off():
-    global p
     try:
-        p.terminate()
+        Session['process'].terminate()
     except AttributeError:
         pass
     led.set_color(0, 0, 0)
@@ -104,7 +102,6 @@ if __name__ == '__main__':
     spotify = CurrentSpotifyPlayback(CLIENT_ID, CLIENT_SECRET,
                                      REDIRECT_URI, REFRESH_TOKEN)
 
-    global p
-    p = Process(target=main_spotify, args=())
+    Session['process'] = Process(target=main_spotify, args=())
 
     app.run(host='0.0.0.0')
