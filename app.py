@@ -15,6 +15,7 @@ CLIENT_SECRET = os.environ.get('SPOTIPY_CLIENT_SECRET')
 REDIRECT_URI = os.environ.get('SPOTIPY_REDIRECT_URI')
 REFRESH_TOKEN = os.environ.get('SPOTIPY_REFRESH_TOKEN')
 
+global p
 
 @app.route('/')
 def main():
